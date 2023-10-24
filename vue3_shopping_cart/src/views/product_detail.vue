@@ -11,12 +11,12 @@
 
                 <div class="d-flex mt-3">
                     <div class="btn-group me-auto">
-                        <button class="btn btn-outline-primary btn-sm">+</button>
-                        <button class="btn btn-outline-primary  btn-sm">0</button>
-                        <button class="btn btn-outline-primary  btn-sm">-</button>
+                        <button class="btn btn-outline-primary btn-sm" @click="increment_quantity()">+</button>
+                        <button class="btn btn-outline-primary  btn-sm">{{ quantity }}</button>
+                        <button class="btn btn-outline-primary  btn-sm" @click="decrement_quantity()">-</button>
                     </div>
                 </div>
-                 <button class="btn btn-primary mt-3">Add to Cart</button>   
+                 <button class="btn btn-primary mt-3" @click="cart_store.add_cart_detail(product.id, product.price, quantity)">Add to Cart</button>   
             </div>
        
             
@@ -29,8 +29,21 @@
     import { useRoute } from 'vue-router';
     import axios from 'axios';
 
+    //useCartStore 
+    import { useCartStore } from '../store/cart';
+    const cart_store = useCartStore()
+
     const route = useRoute()
     const product = ref({})
+
+    const quantity = ref(1)
+
+    const increment_quantity = () => {
+        quantity.value++
+    }
+
+    const decrement_quantity = () => quantity.value--
+
     const load_product = ref(false)
 
     const product_detail = async() => {

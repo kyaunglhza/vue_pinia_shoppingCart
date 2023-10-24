@@ -38,6 +38,31 @@ export const useCartStore = defineStore('useCartStore', () => {
         console.log(cart.value)
     }
 
+    const add_cart_detail = (id, price, quantity) => {
+        const data = {
+            id,
+            price,
+            quantity
+        }
+
+        const findId_detail = cart.value.find(e => e.id == data.id )
+
+        if(findId_detail)
+        {
+            const findIndexProduct = cart.value.findIndex(e => e.id == data.id)
+            cart.value[findIndexProduct].quantity = cart.value[findIndexProduct].quantity + quantity
+            saveToLocalStorage()
+            alert_cart_add()
+        }
+        else
+        {
+            cart.value.push(data)
+            saveToLocalStorage()
+            alert_cart_add()
+        }
+    }
+
+
 
     const saveToLocalStorage = () => {
         localStorage.setItem('cart' , JSON.stringify(cart.value))
@@ -89,6 +114,36 @@ export const useCartStore = defineStore('useCartStore', () => {
         // alert('fail')
     }
 
-    return { cart, add_cart, loadFromLocalStorage, cart_previews }
+    const increment_quantity = (i) => {
+        cart.value[i].quantity += 1
+        saveToLocalStorage()
+    }
+
+    const decrement_quantity = (i) => {
+        cart.value[i].quantity -= 1 
+        saveToLocalStorage()
+
+        if(cart.value[i].quantity == 0)
+        {
+            cart.value.splice(i, 1)
+            saveToLocalStorage()
+        }
+    }
+
+    const remove_cart = (i) => {
+        cart.value.splice(i, 1)
+        saveToLocalStorage()
+    }
+
+    const clear_cart = () => {
+        cart.value = []
+        saveToLocalStorage()
+    }
+
+    const total = computed(() => {
+        return cart.value.reduce((sum, prd) => sum + prd.price * prd.quantity , 0)
+    })
+
+    return { cart, add_cart, loadFromLocalStorage, cart_previews, increment_quantity, decrement_quantity, remove_cart, clear_cart, add_cart_detail, total }
 
 })
